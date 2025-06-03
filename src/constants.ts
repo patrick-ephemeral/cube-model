@@ -8,7 +8,7 @@ export const SOLVED_CUBIE_CUBE: ICubieCube = {
     dfl: { faceA: Face.D, faceB: Face.F, faceC: Face.L, orientation: 0 },
     drf: { faceA: Face.D, faceB: Face.R, faceC: Face.F, orientation: 0 },
     dbr: { faceA: Face.D, faceB: Face.B, faceC: Face.R, orientation: 0 },
-    dlb: { faceA: Face.D, faceB: Face.R, faceC: Face.B, orientation: 0 },
+    dlb: { faceA: Face.D, faceB: Face.L, faceC: Face.B, orientation: 0 },
     uf: { faceA: Face.U, faceB: Face.F, orientation: 0 },
     rf: { faceA: Face.R, faceB: Face.F, orientation: 0 },
     df: { faceA: Face.D, faceB: Face.F, orientation: 0 },

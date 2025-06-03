@@ -1,5 +1,5 @@
 export enum Face {
-    U = "T",
+    U = "U",
     F = "F",
     R = "R",
     B = "B",
