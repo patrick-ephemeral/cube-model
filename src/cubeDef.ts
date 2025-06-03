@@ -21,6 +21,15 @@ export interface IStickerFace {
     btmRow: IStickerRow;
 };
 
+export interface IStickerCube {
+    U: IStickerFace;
+    F: IStickerFace;
+    R: IStickerFace;
+    B: IStickerFace;
+    L: IStickerFace;
+    D: IStickerFace;
+};
+
 export interface ICornerCubie {
     faceA: Face;
     faceB: Face;
