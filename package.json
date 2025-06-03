@@ -1,0 +1,33 @@
+{
+  "name": "@ephemeral/cube-model",
+  "version": "0.1.0",
+  "description": "Typescript implementation of 3x3 Rubix Cube",
+  "main": "dist/index.js",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && node build.js && tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/patrick-ephemeral/cube-model.git"
+  },
+  "keywords": [
+    "Rubix",
+    "TypeScript",
+    "Javascript"
+  ],
+  "author": "Ephemeral Software, LLC",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/patrick-ephemeral/cube-model/issues"
+  },
+  "homepage": "https://github.com/patrick-ephemeral/cube-model#readme",
+  "devDependencies": {
+    "esbuild": "0.25.5",
+    "typescript": "5.8.3"
+  }
+}
