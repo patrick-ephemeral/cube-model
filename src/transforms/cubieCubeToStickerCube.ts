@@ -78,7 +78,7 @@ export const cubieCubeToStickerCube = (cc: ICubieCube): IStickerCube => ({
         },
         btmRow: {
             leftSticker: getCubieCornerSticker(1, cc.drf),
-            centerSticker: getCubieEdgeSticker(1, cc.br),
+            centerSticker: getCubieEdgeSticker(1, cc.dr),
             rightSticker: getCubieCornerSticker(2, cc.dbr),
         },
     },
