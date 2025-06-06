@@ -10,6 +10,7 @@ import {
 const stickers = cubieCubeToStickerCube(SOLVED_CUBIE_CUBE);
 const toTurn = stickerCubeToCubieCube(stickers);
 
+
 const printStickerCube = (sc) => {
     console.log();
     console.log(`                     ${sc.U.topRow.leftSticker}  ${sc.U.topRow.centerSticker}  ${sc.U.topRow.rightSticker}`);

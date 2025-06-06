@@ -7,7 +7,7 @@ import {
 } from "../cubeDef";
 
 const getCubieCornerSticker = (place: 0 | 1 | 2, corner: ICornerCubie): Face => {
-    const rotated = (place + corner.orientation) % 3;
+    const rotated = (place + 3 - corner.orientation) % 3;
     switch (rotated) {
         case 0:
             return corner.faceA;
