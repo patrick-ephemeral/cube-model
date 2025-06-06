@@ -27,6 +27,6 @@ const printStickerCube = (sc) => {
 
 
 printStickerCube(stickers);
-rotateFace(toTurn, Face.R, false);
+rotateFace(toTurn, Face.D, true);
 const turned = cubieCubeToStickerCube(toTurn);
 printStickerCube(turned);

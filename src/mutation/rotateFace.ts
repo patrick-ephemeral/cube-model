@@ -78,6 +78,11 @@ const getCornRot = (sr: SR): [CornRot, CornRot] => [
 ];
 const cornerRotations: { [key: string]: [CornRot, CornRot] } = {
     [Face.R]: getCornRot([["ufr", 1, "urb"], ["drf", 2, "ufr"], ["dbr", 1, "drf"], ["urb", 2, "dbr"]]),
+    [Face.F]: getCornRot([["ulf", 1, "ufr"], ["ufr", 2, "drf"], ["drf", 1, "dfl"], ["dfl", 2, "ulf"]]),
+    [Face.U]: getCornRot([["ubl", 0, "urb"], ["urb", 0, "ufr"], ["ufr", 0, "ulf"], ["ulf", 0, "ubl"]]),
+    [Face.L]: getCornRot([["ubl", 1, "ulf"], ["ulf", 2, "dfl"], ["dfl", 1, "dlb"], ["dlb", 2, "ubl"]]),
+    [Face.B]: getCornRot([["urb", 1, "ubl"], ["ubl", 2, "dlb"], ["dlb", 1, "dbr"], ["dbr", 2, "urb"]]),
+    [Face.D]: getCornRot([["dfl", 0, "drf"], ["drf", 0, "dbr"], ["dbr", 0, "dlb"], ["dlb", 0, "dfl"]]),
 };
 
 type EdgeInst = [EdgeGetter, 0 | 1, EdgeSetter];
@@ -98,6 +103,11 @@ const getEdgeRot = (ae: AE): [EdgeRot, EdgeRot] => [
 ];
 const edgeRotations: { [key: string]: [EdgeRot, EdgeRot] } = {
     [Face.R]: getEdgeRot([["rf", 0, "ru"], ["ru", 1, "br"], ["br", 0, "dr"], ["dr", 1, "rf"]]),
+    [Face.F]: getEdgeRot([["lf", 0, "uf"], ["uf", 0, "rf"], ["rf", 0, "df"], ["df", 0, "lf"]]),
+    [Face.U]: getEdgeRot([["lu", 1, "ub"], ["ub", 1, "ru"], ["ru", 1, "uf"], ["uf", 1, "lu"]]),
+    [Face.L]: getEdgeRot([["bl", 1, "lu"], ["lu", 0, "lf"], ["lf", 1, "dl"], ["dl", 0, "bl"]]),
+    [Face.B]: getEdgeRot([["br", 1, "ub"], ["ub", 1, "bl"], ["bl", 1, "db"], ["db", 1, "br"]]),
+    [Face.D]: getEdgeRot([["dl", 0, "df"], ["df", 0, "dr"], ["dr", 0, "db"], ["db", 0, "dl"]]),
 };
 
 

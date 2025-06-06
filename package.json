@@ -8,6 +8,7 @@
     "README.md"
   ],
   "scripts": {
+    "sample": "npm run build && node sample.mjs",
     "build": "rm -rf dist && node build.js && tsc",
     "test": "jest"
   },
