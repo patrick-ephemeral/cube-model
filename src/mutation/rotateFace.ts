@@ -77,11 +77,11 @@ const getCornRot = (sr: SR): [CornRot, CornRot] => [
     ] as CornerInst) as CornRot,
 ];
 const cornerRotations: { [key: string]: [CornRot, CornRot] } = {
-    [Face.R]: getCornRot([["ufr", 1, "urb"], ["drf", 2, "ufr"], ["dbr", 1, "drf"], ["urb", 2, "dbr"]]),
-    [Face.F]: getCornRot([["ulf", 1, "ufr"], ["ufr", 2, "drf"], ["drf", 1, "dfl"], ["dfl", 2, "ulf"]]),
+    [Face.R]: getCornRot([["ufr", 2, "urb"], ["drf", 1, "ufr"], ["dbr", 2, "drf"], ["urb", 1, "dbr"]]),
+    [Face.F]: getCornRot([["ulf", 2, "ufr"], ["ufr", 1, "drf"], ["drf", 2, "dfl"], ["dfl", 1, "ulf"]]),
     [Face.U]: getCornRot([["ubl", 0, "urb"], ["urb", 0, "ufr"], ["ufr", 0, "ulf"], ["ulf", 0, "ubl"]]),
-    [Face.L]: getCornRot([["ubl", 1, "ulf"], ["ulf", 2, "dfl"], ["dfl", 1, "dlb"], ["dlb", 2, "ubl"]]),
-    [Face.B]: getCornRot([["urb", 1, "ubl"], ["ubl", 2, "dlb"], ["dlb", 1, "dbr"], ["dbr", 2, "urb"]]),
+    [Face.L]: getCornRot([["ubl", 2, "ulf"], ["ulf", 1, "dfl"], ["dfl", 2, "dlb"], ["dlb", 1, "ubl"]]),
+    [Face.B]: getCornRot([["urb", 2, "ubl"], ["ubl", 1, "dlb"], ["dlb", 2, "dbr"], ["dbr", 1, "urb"]]),
     [Face.D]: getCornRot([["dfl", 0, "drf"], ["drf", 0, "dbr"], ["dbr", 0, "dlb"], ["dlb", 0, "dfl"]]),
 };
 
