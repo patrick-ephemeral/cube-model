@@ -1,3 +1,4 @@
+import rl from "readline/promises";
 import {
     cubieCubeToStickerCube,
     Face,
@@ -25,8 +26,72 @@ const printStickerCube = (sc) => {
     console.log();
 };
 
+const prompt = rl.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+});
 
-printStickerCube(stickers);
-rotateFace(toTurn, Face.D, true);
-const turned = cubieCubeToStickerCube(toTurn);
-printStickerCube(turned);
+(async () => {
+    let printInstructions = true;
+    let loop = true;
+
+    do {
+        printStickerCube(cubieCubeToStickerCube(toTurn));
+        if (printInstructions) {
+            printInstructions = false;
+            console.log("Valid Options:");
+            console.log("   Turns: R R' F F' U U' L L' B B' D D'");
+            console.log("   Quit: X");
+        }
+        const input = (await prompt.question("> ")).toUpperCase();
+        switch (input) {
+            case "X":
+                loop = false;
+                break;
+            case "R":
+                rotateFace(toTurn, Face.R, true);
+                break;
+            case "R'":
+                rotateFace(toTurn, Face.R, false);
+                break;
+            case "F":
+                rotateFace(toTurn, Face.F, true);
+                break;
+            case "F'":
+                rotateFace(toTurn, Face.F, false);
+                break;
+            case "U":
+                rotateFace(toTurn, Face.U, true);
+                break;
+            case "U'":
+                rotateFace(toTurn, Face.U, false);
+                break;
+            case "L":
+                rotateFace(toTurn, Face.L, true);
+                break;
+            case "L'":
+                rotateFace(toTurn, Face.L, false);
+                break;
+            case "B":
+                rotateFace(toTurn, Face.B, true);
+                break;
+            case "B'":
+                rotateFace(toTurn, Face.B, false);
+                break;
+            case "D":
+                rotateFace(toTurn, Face.D, true);
+                break;
+            case "D'":
+                rotateFace(toTurn, Face.D, false);
+                break;
+            default:
+                printInstructions = true;
+                break;
+        }
+
+    } while (loop)
+
+    prompt.close();
+
+})();
+
