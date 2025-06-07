@@ -15,7 +15,7 @@ interface IMoveChain extends IMove {
 
 type Link = IMoveChain | Start | End;
 
-const CUBE_SPACE_SIZE = 10 * 21;
+const CUBE_SPACE_SIZE = 10000 * 21;
 const MOVES: IMove[] = [
     { face: Face.R, clockwise: true },
     { face: Face.R, clockwise: false },
@@ -52,6 +52,9 @@ const solve = (uc: IUselessCube): IMove[] => {
     // start the queue reading the start and end, write after them
     let readIndex = 0;
     let writeIndex = 42;
+    let cubesAnalyzed = 0;
+    let fromStartCubes = 1;
+    let fromEndCubes = 1;
     const cube = createBlankUselessCube();
 
     // while there is space to keep searching
@@ -62,14 +65,14 @@ const solve = (uc: IUselessCube): IMove[] => {
         const fromStart = (lastLink as IMoveChain).fromStart ?? lastLink === "START";
 
         // loop through the moves
-        MOVES.forEach((move) => {
+        for (const move of MOVES) {
             // start at read and turn the cube
             fillUselessCubeFromArray(cube, cubeSpace as number[], readIndex);
             rotateFace(cube, move.face, move.clockwise);
 
             // see if this is a new position, or if it connects the chains
             var hash = writeUselessCubeToArray(cube, cubeSpace as number[], writeIndex);
-            console.log(hash.toString(36));
+
             if (linkMap.has(hash)) {
 
                 // see if it connects!
@@ -107,6 +110,7 @@ const solve = (uc: IUselessCube): IMove[] => {
                             face: (endChain as IMoveChain).face,
                             clockwise: !(endChain as IMoveChain).clockwise,
                         });
+                        endChain = (endChain as IMoveChain).last;
                     }
 
                     // return the moves
@@ -117,22 +121,31 @@ const solve = (uc: IUselessCube): IMove[] => {
             } else {
 
                 // this is a new position, add it to the map
+                if (fromStart) { fromStartCubes += 1; } else { fromEndCubes += 1; }
                 const newLink = { ...move, fromStart, last: lastLink };
                 cubeSpace[writeIndex + 20] = newLink;
                 linkMap.set(hash, newLink);
 
                 // increment the writeIndex
-                const writeBelowRead = writeIndex > readIndex;
+                const writeBelowRead = writeIndex < readIndex;
                 writeIndex = (writeIndex + 21) % CUBE_SPACE_SIZE;
-                if (writeBelowRead && writeIndex > readIndex) {
+                if (writeBelowRead && writeIndex >= readIndex) {
                     throw new Error("Ran out of room");
                 }
+                // writeIndex += 21;
+                // if (writeIndex >= CUBE_SPACE_SIZE) {
+                //     throw new Error("Ran out of room");
+                // }
             }
-        });
+        }
 
         // increment the readIndex and try again
+        cubesAnalyzed += 1;
+        console.log(`Cubes Analyzed: ${cubesAnalyzed}`);
+        console.log(`Unique cubes from start: ${fromStartCubes}`);
+        console.log(`Unique cubes from end: ${fromEndCubes}`);
+
         readIndex = (readIndex + 21) % CUBE_SPACE_SIZE;
-        console.log(readIndex);
     }
 };
 
