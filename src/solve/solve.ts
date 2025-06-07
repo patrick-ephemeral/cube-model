@@ -15,7 +15,7 @@ interface IMoveChain extends IMove {
 
 type Link = IMoveChain | Start | End;
 
-const CUBE_SPACE_SIZE = 100000 * 21;
+const CUBE_SPACE_SIZE = 10 * 21;
 const MOVES: IMove[] = [
     { face: Face.R, clockwise: true },
     { face: Face.R, clockwise: false },
@@ -69,6 +69,7 @@ const solve = (uc: IUselessCube): IMove[] => {
 
             // see if this is a new position, or if it connects the chains
             var hash = writeUselessCubeToArray(cube, cubeSpace as number[], writeIndex);
+            console.log(hash.toString(36));
             if (linkMap.has(hash)) {
 
                 // see if it connects!
@@ -121,9 +122,9 @@ const solve = (uc: IUselessCube): IMove[] => {
                 linkMap.set(hash, newLink);
 
                 // increment the writeIndex
-                const writeAboveRead = writeIndex > readIndex;
+                const writeBelowRead = writeIndex > readIndex;
                 writeIndex = (writeIndex + 21) % CUBE_SPACE_SIZE;
-                if (!writeAboveRead && writeIndex > readIndex) {
+                if (writeBelowRead && writeIndex > readIndex) {
                     throw new Error("Ran out of room");
                 }
             }
@@ -131,6 +132,7 @@ const solve = (uc: IUselessCube): IMove[] => {
 
         // increment the readIndex and try again
         readIndex = (readIndex + 21) % CUBE_SPACE_SIZE;
+        console.log(readIndex);
     }
 };
 

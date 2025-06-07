@@ -5,6 +5,7 @@ import {
     rotateFace,
     SOLVED_CUBIE_CUBE,
     stickerCubeToCubieCube,
+    solveCubieCube,
 } from "./dist/index.mjs";
 
 const stickers = cubieCubeToStickerCube(SOLVED_CUBIE_CUBE);
@@ -42,6 +43,7 @@ const prompt = rl.createInterface({
             printInstructions = false;
             console.log("Valid Options:");
             console.log("   Turns: R R' F F' U U' L L' B B' D D'");
+            console.log("   Solve: S");
             console.log("   Quit: X");
         }
         const input = (await prompt.question("> ")).toUpperCase();
@@ -84,6 +86,10 @@ const prompt = rl.createInterface({
                 break;
             case "D'":
                 rotateFace(toTurn, Face.D, false);
+                break;
+            case "S":
+                console.log("Solving...");
+                console.log(JSON.stringify(solveCubieCube(toTurn), null, 2));
                 break;
             default:
                 printInstructions = true;
