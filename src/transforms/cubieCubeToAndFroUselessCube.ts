@@ -1,6 +1,4 @@
-import { Face, ICornerCubie, ICubieCube, IEdgeCubie, IUselessCube, IUselessPiece } from "../cubeDef";
-
-type PIECE_ID = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19;
+import { Face, ICornerCubie, ICubieCube, IEdgeCubie, IUselessCube, IUselessPiece, PIECE_ID } from "../cubeDef";
 
 const pairs: [PIECE_ID, Face[]][] = [
     [0, [Face.U, Face.L, Face.F]],
