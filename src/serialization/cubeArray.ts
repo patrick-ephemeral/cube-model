@@ -1,6 +1,6 @@
 import { IUselessCube, PIECE_ID } from "../cubeDef";
 
-export const writeUselessCubeToArray = (uc: IUselessCube, ar: number[], startIndex: number) => {
+export const writeUselessCubeToArray = (uc: IUselessCube, ar: number[], startIndex: number): number => {
     ar[startIndex + 0] = (uc.ulf.piece * 10) + uc.ulf.orientation;
     ar[startIndex + 1] = (uc.ufr.piece * 10) + uc.ufr.orientation;
     ar[startIndex + 2] = (uc.urb.piece * 10) + uc.urb.orientation;
@@ -21,9 +21,17 @@ export const writeUselessCubeToArray = (uc: IUselessCube, ar: number[], startInd
     ar[startIndex + 17] = (uc.dl.piece * 10) + uc.dl.orientation;
     ar[startIndex + 18] = (uc.ub.piece * 10) + uc.ub.orientation;
     ar[startIndex + 19] = (uc.db.piece * 10) + uc.db.orientation;
+
+    let hash = 0;
+
+    for (let i = 0; i < 20; i++) {
+        hash = (hash * 41 + ar[startIndex + i]) % Number.MAX_SAFE_INTEGER;
+    }
+
+    return hash;
 };
 
-export const fillUselessCubeFromArray = (uc: IUselessCube, ar: number[], startIndex: number) => {
+export const fillUselessCubeFromArray = (uc: IUselessCube, ar: number[], startIndex: number): void => {
     uc.ulf.piece = ((ar[startIndex] / 10) | 0) as PIECE_ID;
     uc.ulf.orientation = ar[startIndex] % 10 as 0 | 1 | 2;
     uc.ufr.piece = ((ar[startIndex + 1] / 10) | 0) as PIECE_ID;

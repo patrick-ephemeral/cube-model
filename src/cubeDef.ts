@@ -95,3 +95,8 @@ export interface IUselessCube {
     ub: IUselessPiece;
     db: IUselessPiece;
 };
+
+export interface IMove {
+    face: Face,
+    clockwise: boolean,
+};
