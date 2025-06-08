@@ -15,7 +15,7 @@ interface IMoveChain extends IMove {
 
 type Link = IMoveChain | Start | End;
 
-const CUBE_SPACE_SIZE = 10000000 * 21;
+const CUBE_SPACE_SIZE = 4000000 * 5;
 const MOVES: IMove[] = [
     { face: Face.R, clockwise: true },
     { face: Face.R, clockwise: false },
@@ -41,17 +41,17 @@ const solve = (uc: IUselessCube): IMove[] => {
 
     // add start cube to queue:
     const startHash = writeUselessCubeToArray(uc, cubeSpace as number[], 0);
-    cubeSpace[20] = "START";
+    cubeSpace[4] = "START";
     linkMap.set(startHash, "START");
 
     // add final state to queue:
-    const endHash = writeUselessCubeToArray(cubieCubeToUselessCube(SOLVED_CUBIE_CUBE), cubeSpace as number[], 21);
-    cubeSpace[41] = "END";
+    const endHash = writeUselessCubeToArray(cubieCubeToUselessCube(SOLVED_CUBIE_CUBE), cubeSpace as number[], 5);
+    cubeSpace[9] = "END";
     linkMap.set(endHash, "END");
 
     // start the queue reading the start and end, write after them
     let readIndex = 0;
-    let writeIndex = 42;
+    let writeIndex = 10;
     let cubesAnalyzed = 0;
     let fromStartCubes = 1;
     let fromEndCubes = 1;
@@ -61,7 +61,7 @@ const solve = (uc: IUselessCube): IMove[] => {
     while (true) {
 
         // find place in chain
-        const lastLink = cubeSpace[readIndex + 20] as Link;
+        const lastLink = cubeSpace[readIndex + 4] as Link;
         const fromStart = (lastLink as IMoveChain).fromStart ?? lastLink === "START";
 
         // loop through the moves
@@ -123,19 +123,15 @@ const solve = (uc: IUselessCube): IMove[] => {
                 // this is a new position, add it to the map
                 if (fromStart) { fromStartCubes += 1; } else { fromEndCubes += 1; }
                 const newLink = { ...move, fromStart, last: lastLink };
-                cubeSpace[writeIndex + 20] = newLink;
+                cubeSpace[writeIndex + 4] = newLink;
                 linkMap.set(hash, newLink);
 
                 // increment the writeIndex
                 const writeBelowRead = writeIndex < readIndex;
-                writeIndex = (writeIndex + 21) % CUBE_SPACE_SIZE;
+                writeIndex = (writeIndex + 5) % CUBE_SPACE_SIZE;
                 if (writeBelowRead && writeIndex >= readIndex) {
                     throw new Error("Ran out of room");
                 }
-                // writeIndex += 21;
-                // if (writeIndex >= CUBE_SPACE_SIZE) {
-                //     throw new Error("Ran out of room");
-                // }
             }
         }
 
@@ -147,7 +143,7 @@ const solve = (uc: IUselessCube): IMove[] => {
             console.log(`Unique cubes from end: ${fromEndCubes}`);
         }
 
-        readIndex = (readIndex + 21) % CUBE_SPACE_SIZE;
+        readIndex = (readIndex + 5) % CUBE_SPACE_SIZE;
     }
 };
 
