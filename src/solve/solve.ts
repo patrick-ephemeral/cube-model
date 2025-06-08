@@ -15,7 +15,7 @@ interface IMoveChain extends IMove {
 
 type Link = IMoveChain | Start | End;
 
-const CUBE_SPACE_SIZE = 10000 * 21;
+const CUBE_SPACE_SIZE = 10000000 * 21;
 const MOVES: IMove[] = [
     { face: Face.R, clockwise: true },
     { face: Face.R, clockwise: false },
@@ -141,9 +141,11 @@ const solve = (uc: IUselessCube): IMove[] => {
 
         // increment the readIndex and try again
         cubesAnalyzed += 1;
-        console.log(`Cubes Analyzed: ${cubesAnalyzed}`);
-        console.log(`Unique cubes from start: ${fromStartCubes}`);
-        console.log(`Unique cubes from end: ${fromEndCubes}`);
+        if (!(cubesAnalyzed % 10000)) {
+            console.log(`Cubes Analyzed: ${cubesAnalyzed}`);
+            console.log(`Unique cubes from start: ${fromStartCubes}`);
+            console.log(`Unique cubes from end: ${fromEndCubes}`);
+        }
 
         readIndex = (readIndex + 21) % CUBE_SPACE_SIZE;
     }

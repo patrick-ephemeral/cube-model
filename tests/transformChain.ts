@@ -151,6 +151,7 @@ describe("Transform Chain", () => {
         expect(blank).not.toEqual(useless);
         fillUselessCubeFromArray(blank, a, 45789);
         const stickers = cubieCubeToStickerCube(uselessCubeToCubieCube(blank));
+        expect(blank).toEqual(useless);
         expect(stickers).toEqual(scrambled);
     });
 });

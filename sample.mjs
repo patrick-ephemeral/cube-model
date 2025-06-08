@@ -89,7 +89,8 @@ const prompt = rl.createInterface({
                 break;
             case "S":
                 console.log("Solving...");
-                console.log(JSON.stringify(solveCubieCube(toTurn), null, 2));
+                var solution = solveCubieCube(toTurn);
+                console.log(solution.map(t => `${t.face}${t.clockwise ? "" : "'"}`).join("  "));
                 break;
             default:
                 printInstructions = true;
