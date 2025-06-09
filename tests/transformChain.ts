@@ -5,6 +5,8 @@ import {
     cubieCubeToUselessCube,
     Face,
     fillUselessCubeFromArray,
+    fillUselessCubeFromBigInt,
+    getBigIntForCube,
     IStickerCube,
     stickerCubeToCubieCube,
     uselessCubeToCubieCube,
@@ -150,6 +152,17 @@ describe("Transform Chain", () => {
         const blank = createBlankUselessCube();
         expect(blank).not.toEqual(useless);
         fillUselessCubeFromArray(blank, a, 45789);
+        const stickers = cubieCubeToStickerCube(uselessCubeToCubieCube(blank));
+        expect(blank).toEqual(useless);
+        expect(stickers).toEqual(scrambled);
+    });
+
+    test("Converting a cube to a big int and back doesn't change it", () => {
+        const useless = cubieCubeToUselessCube(stickerCubeToCubieCube(scrambled));
+        const biCube = getBigIntForCube(useless);
+        const blank = createBlankUselessCube();
+        expect(blank).not.toEqual(useless);
+        fillUselessCubeFromBigInt(blank, biCube);
         const stickers = cubieCubeToStickerCube(uselessCubeToCubieCube(blank));
         expect(blank).toEqual(useless);
         expect(stickers).toEqual(scrambled);

@@ -1,6 +1,6 @@
 import { IUselessCube, PIECE_ID } from "../cubeDef";
 
-export const writeUselessCubeToArray = (uc: IUselessCube, ar: number[], startIndex: number): number => {
+export const writeUselessCubeToArray = (uc: IUselessCube, ar: number[], startIndex: number): string => {
 
     const cornersA = 0 |
         (uc.ulf.orientation << 0) | (uc.ulf.piece << 2) |
@@ -12,7 +12,7 @@ export const writeUselessCubeToArray = (uc: IUselessCube, ar: number[], startInd
         (uc.dfl.orientation << 0) | (uc.dfl.piece << 2) |
         (uc.drf.orientation << 6) | (uc.drf.piece << 8) |
         (uc.dbr.orientation << 12) | (uc.dbr.piece << 14) |
-        (uc.dlb.orientation << 18) | (uc.dbr.piece << 20);
+        (uc.dlb.orientation << 18) | (uc.dlb.piece << 20);
 
     const edgesA = 0 |
         (uc.uf.orientation << 0) | ((uc.uf.piece - 8) << 1) |
@@ -35,12 +35,13 @@ export const writeUselessCubeToArray = (uc: IUselessCube, ar: number[], startInd
     ar[startIndex + 2] = edgesA;
     ar[startIndex + 3] = edgesB;
 
-    let h = 2166136261; // FNV offset basis
-    h ^= cornersA; h = Math.imul(h, 16777619);
-    h ^= cornersB; h = Math.imul(h, 16777619);
-    h ^= edgesA; h = Math.imul(h, 16777619);
-    h ^= edgesB; h = Math.imul(h, 16777619);
-    return h >>> 0; // force unsigned
+    let h1 = 2166136261; // FNV offset basis
+    let h2 = h1;
+    h1 ^= cornersA; h1 = Math.imul(h1, 16777619);
+    h1 ^= cornersB; h1 = Math.imul(h1, 16777619);
+    h2 ^= edgesA; h2 = Math.imul(h2, 16777619);
+    h2 ^= edgesB; h2 = Math.imul(h2, 16777619);
+    return `${(h1 >>> 0).toString(36)} | ${(h2 >>> 0).toString(36)}`;
 };
 
 export const fillUselessCubeFromArray = (uc: IUselessCube, ar: number[], startIndex: number): void => {

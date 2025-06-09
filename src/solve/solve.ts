@@ -15,7 +15,6 @@ interface IMoveChain extends IMove {
 
 type Link = IMoveChain | Start | End;
 
-const CUBE_SPACE_SIZE = 4000000 * 5;
 const MOVES: IMove[] = [
     { face: Face.R, clockwise: true },
     { face: Face.R, clockwise: false },
@@ -34,10 +33,10 @@ const MOVES: IMove[] = [
 const solve = (uc: IUselessCube): IMove[] => {
 
     // make a queue to hold positions to evalutate
-    const cubeSpace = new Array<number | Link>(CUBE_SPACE_SIZE);
+    const cubeSpace = new Array<number | Link>();
 
     // make a map of position hash's to links
-    const linkMap = new Map<number, Link>();
+    const linkMap = new Map<string, Link>();
 
     // add start cube to queue:
     const startHash = writeUselessCubeToArray(uc, cubeSpace as number[], 0);
@@ -127,11 +126,7 @@ const solve = (uc: IUselessCube): IMove[] => {
                 linkMap.set(hash, newLink);
 
                 // increment the writeIndex
-                const writeBelowRead = writeIndex < readIndex;
-                writeIndex = (writeIndex + 5) % CUBE_SPACE_SIZE;
-                if (writeBelowRead && writeIndex >= readIndex) {
-                    throw new Error("Ran out of room");
-                }
+                writeIndex += 5;
             }
         }
 
@@ -143,7 +138,7 @@ const solve = (uc: IUselessCube): IMove[] => {
             console.log(`Unique cubes from end: ${fromEndCubes}`);
         }
 
-        readIndex = (readIndex + 5) % CUBE_SPACE_SIZE;
+        readIndex += 5;
     }
 };
 
