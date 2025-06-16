@@ -40,7 +40,7 @@ const cornerSets: { [key: string]: CornerSetter } = {
     "dlb": (c, d) => { c.dlb = d; },
 };
 const cornerBiSets: { [key: string]: BiSet } = {
-    "ulf": (c, d) => (c & ~63n) & d,
+    "ulf": (c, d) => (c & ~63n) | d,
     "ufr": (c, d) => (c & ~(63n << 6n)) | (d << 6n),
     "urb": (c, d) => (c & ~(63n << 12n)) | (d << 12n),
     "ubl": (c, d) => (c & ~(63n << 18n)) | (d << 18n),
@@ -221,7 +221,7 @@ const edgeBiRotations: { [key: string]: [EdgeBiRot, EdgeBiRot] } = {
 };
 
 export const rotateFace = (cub: Cube, f: Face, clockwise: boolean): void => {
-    const [a, b, c, d] = cornerRotations[f][clockwise ? 0 : 1]
+    const [a, b, c, d] = cornerRotations[f][clockwise ? 0 : 1];
     const ca = a[0](cub);
     const cb = b[0](cub);
     const cc = c[0](cub);
@@ -235,7 +235,7 @@ export const rotateFace = (cub: Cube, f: Face, clockwise: boolean): void => {
     c[2](cub, cc);
     d[2](cub, cd);
 
-    const [i, j, k, l] = edgeRotations[f][clockwise ? 0 : 1]
+    const [i, j, k, l] = edgeRotations[f][clockwise ? 0 : 1];
     const ei = i[0](cub);
     const ej = j[0](cub);
     const ek = k[0](cub);
@@ -277,26 +277,17 @@ const biCornerOrientationFlips = [
 const e = (cub: bigint) => console.log(cub.toString(2));
 
 export const rotateFaceBigInt = (cub: bigint, f: Face, clockwise: boolean): bigint => {
-    e(cub);
-
-    const [a, b, c, d] = cornerBiRotations[f][clockwise ? 0 : 1]
-
-    e(a[0](cub));
+    const [a, b, c, d] = cornerBiRotations[f][clockwise ? 0 : 1];
     const ca = biCornerOrientationFlips[a[1]](a[0](cub));
-    e(ca);
     const cb = biCornerOrientationFlips[b[1]](b[0](cub));
     const cc = biCornerOrientationFlips[c[1]](c[0](cub));
     const cd = biCornerOrientationFlips[d[1]](d[0](cub));
-
-
     const afterA = a[2](cub, ca);
-
-    e(afterA);
     const afterB = b[2](afterA, cb);
     const afterC = c[2](afterB, cc);
     const afterD = d[2](afterC, cd);
 
-    const [i, j, k, l] = edgeBiRotations[f][clockwise ? 0 : 1]
+    const [i, j, k, l] = edgeBiRotations[f][clockwise ? 0 : 1];
     const ei = i[0](cub) ^ i[1];
     const ej = j[0](cub) ^ j[1];
     const ek = k[0](cub) ^ k[1];
