@@ -2,14 +2,18 @@ import rl from "readline/promises";
 import {
     cubieCubeToStickerCube,
     Face,
-    rotateFace,
+    rotateFaceBigInt,
     SOLVED_CUBIE_CUBE,
     stickerCubeToCubieCube,
-    solveCubieCube,
+    cubieCubeToUselessCube,
+    getBigIntForCube,
+    fillUselessCubeFromBigInt,
+    uselessCubeToCubieCube,
 } from "./dist/index.mjs";
 
 const stickers = cubieCubeToStickerCube(SOLVED_CUBIE_CUBE);
-const toTurn = stickerCubeToCubieCube(stickers);
+const useless = cubieCubeToUselessCube(stickerCubeToCubieCube(stickers));
+let biTurn = getBigIntForCube(useless);
 
 
 const printStickerCube = (sc) => {
@@ -38,12 +42,13 @@ const prompt = rl.createInterface({
     let loop = true;
 
     do {
-        printStickerCube(cubieCubeToStickerCube(toTurn));
+        fillUselessCubeFromBigInt(useless, biTurn);
+        printStickerCube(cubieCubeToStickerCube(uselessCubeToCubieCube(useless)));
         if (printInstructions) {
             printInstructions = false;
             console.log("Valid Options:");
             console.log("   Turns: R R' F F' U U' L L' B B' D D'");
-            console.log("   Solve: S");
+            // console.log("   Solve: S");
             console.log("   Quit: X");
         }
         const input = (await prompt.question("> ")).toUpperCase();
@@ -52,45 +57,45 @@ const prompt = rl.createInterface({
                 loop = false;
                 break;
             case "R":
-                rotateFace(toTurn, Face.R, true);
+                biTurn = rotateFaceBigInt(biTurn, Face.R, true);
                 break;
             case "R'":
-                rotateFace(toTurn, Face.R, false);
+                biTurn = rotateFaceBigInt(biTurn, Face.R, false);
                 break;
             case "F":
-                rotateFace(toTurn, Face.F, true);
+                biTurn = rotateFaceBigInt(biTurn, Face.F, true);
                 break;
             case "F'":
-                rotateFace(toTurn, Face.F, false);
+                biTurn = rotateFaceBigInt(biTurn, Face.F, false);
                 break;
             case "U":
-                rotateFace(toTurn, Face.U, true);
+                biTurn = rotateFaceBigInt(biTurn, Face.U, true);
                 break;
             case "U'":
-                rotateFace(toTurn, Face.U, false);
+                biTurn = rotateFaceBigInt(biTurn, Face.U, false);
                 break;
             case "L":
-                rotateFace(toTurn, Face.L, true);
+                biTurn = rotateFaceBigInt(biTurn, Face.L, true);
                 break;
             case "L'":
-                rotateFace(toTurn, Face.L, false);
+                biTurn = rotateFaceBigInt(biTurn, Face.L, false);
                 break;
             case "B":
-                rotateFace(toTurn, Face.B, true);
+                biTurn = rotateFaceBigInt(biTurn, Face.B, true);
                 break;
             case "B'":
-                rotateFace(toTurn, Face.B, false);
+                biTurn = rotateFaceBigInt(biTurn, Face.B, false);
                 break;
             case "D":
-                rotateFace(toTurn, Face.D, true);
+                biTurn = rotateFaceBigInt(biTurn, Face.D, true);
                 break;
             case "D'":
-                rotateFace(toTurn, Face.D, false);
+                biTurn = rotateFaceBigInt(biTurn, Face.D, false);
                 break;
-            case "S":
-                console.log("Solving...");
-                var solution = solveCubieCube(toTurn);
-                console.log(solution.map(t => `${t.face}${t.clockwise ? "" : "'"}`).join("  "));
+                // case "S":
+                //     console.log("Solving...");
+                //     var solution = solveCubieCube(toTurn);
+                //     console.log(solution.map(t => `${t.face}${t.clockwise ? "" : "'"}`).join("  "));
                 break;
             default:
                 printInstructions = true;

@@ -41,13 +41,13 @@ const cornerSets: { [key: string]: CornerSetter } = {
 };
 const cornerBiSets: { [key: string]: BiSet } = {
     "ulf": (c, d) => (c & ~63n) & d,
-    "ufr": (c, d) => (c & ~(63n << 6n)) & (d << 6n),
-    "urb": (c, d) => (c & ~(63n << 12n)) & (d << 12n),
-    "ubl": (c, d) => (c & ~(63n << 18n)) & (d << 18n),
-    "dfl": (c, d) => (c & ~(63n << 24n)) & (d << 24n),
-    "drf": (c, d) => (c & ~(63n << 30n)) & (d << 30n),
-    "dbr": (c, d) => (c & ~(63n << 36n)) & (d << 36n),
-    "dlb": (c, d) => (c & ~(63n << 42n)) & (d << 42n),
+    "ufr": (c, d) => (c & ~(63n << 6n)) | (d << 6n),
+    "urb": (c, d) => (c & ~(63n << 12n)) | (d << 12n),
+    "ubl": (c, d) => (c & ~(63n << 18n)) | (d << 18n),
+    "dfl": (c, d) => (c & ~(63n << 24n)) | (d << 24n),
+    "drf": (c, d) => (c & ~(63n << 30n)) | (d << 30n),
+    "dbr": (c, d) => (c & ~(63n << 36n)) | (d << 36n),
+    "dlb": (c, d) => (c & ~(63n << 42n)) | (d << 42n),
 };
 
 type EdgeGetter = (c: Cube) => Edge;
@@ -96,18 +96,18 @@ const edgeSets: { [key: string]: EdgeSetter } = {
     "db": (c, d) => { c.db = d; },
 };
 const edgeBiSets: { [key: string]: BiSet } = {
-    "uf": (c, d) => (c & ~(31n << 48n)) & (d << 48n),
-    "rf": (c, d) => (c & ~(31n << 53n)) & (d << 53n),
-    "df": (c, d) => (c & ~(31n << 58n)) & (d << 58n),
-    "lf": (c, d) => (c & ~(31n << 63n)) & (d << 63n),
-    "ru": (c, d) => (c & ~(31n << 68n)) & (d << 68n),
-    "br": (c, d) => (c & ~(31n << 73n)) & (d << 73n),
-    "dr": (c, d) => (c & ~(31n << 78n)) & (d << 78n),
-    "lu": (c, d) => (c & ~(31n << 83n)) & (d << 83n),
-    "bl": (c, d) => (c & ~(31n << 88n)) & (d << 88n),
-    "dl": (c, d) => (c & ~(31n << 93n)) & (d << 93n),
-    "ub": (c, d) => (c & ~(31n << 98n)) & (d << 98n),
-    "db": (c, d) => (c & ~(31n << 103n)) & (d << 103n),
+    "rf": (c, d) => (c & ~(31n << 53n)) | (d << 53n),
+    "uf": (c, d) => (c & ~(31n << 48n)) | (d << 48n),
+    "df": (c, d) => (c & ~(31n << 58n)) | (d << 58n),
+    "lf": (c, d) => (c & ~(31n << 63n)) | (d << 63n),
+    "ru": (c, d) => (c & ~(31n << 68n)) | (d << 68n),
+    "br": (c, d) => (c & ~(31n << 73n)) | (d << 73n),
+    "dr": (c, d) => (c & ~(31n << 78n)) | (d << 78n),
+    "lu": (c, d) => (c & ~(31n << 83n)) | (d << 83n),
+    "bl": (c, d) => (c & ~(31n << 88n)) | (d << 88n),
+    "dl": (c, d) => (c & ~(31n << 93n)) | (d << 93n),
+    "ub": (c, d) => (c & ~(31n << 98n)) | (d << 98n),
+    "db": (c, d) => (c & ~(31n << 103n)) | (d << 103n),
 };
 
 type CornerInst = [CornerGetter, 0 | 1 | 2, CornerSetter];
@@ -166,7 +166,7 @@ const cornerBiRotations: { [key: string]: [CornBiRot, CornBiRot] } = {
 }
 
 type EdgeInst = [EdgeGetter, 0 | 1, EdgeSetter];
-type EdgeBiInst = [BiGet, 0 | 1, BiSet];
+type EdgeBiInst = [BiGet, 0n | 1n, BiSet];
 type EdgeRot = [EdgeInst, EdgeInst, EdgeInst, EdgeInst];
 type EdgeBiRot = [EdgeBiInst, EdgeBiInst, EdgeBiInst, EdgeBiInst];
 type HEIF = [string, 0 | 1, string];
@@ -186,12 +186,12 @@ const getEdgeRot = (ae: AE): [EdgeRot, EdgeRot] => [
 const getEdgeBiRot = (ae: AE): [EdgeBiRot, EdgeBiRot] => [
     ae.map((heif) => [
         edgeBiGets[heif[0]],
-        heif[1],
+        BigInt(heif[1]),
         edgeBiSets[heif[2]]
     ] as EdgeBiInst) as EdgeBiRot,
     ae.map((heif) => [
         edgeBiGets[heif[2]],
-        heif[1],
+        BigInt(heif[1]),
         edgeBiSets[heif[0]]
     ] as EdgeBiInst) as EdgeBiRot
 ];
@@ -252,35 +252,57 @@ export const rotateFace = (cub: Cube, f: Face, clockwise: boolean): void => {
 
 const biCornerOrientationFlips = [
     (p: bigint) => p,
-    (p: bigint) => (p & [1n, 2n, 0n][p & 0b11n]),
-]
+    (p: bigint) => {
+        switch (p & 3n) {
+            case 0n:
+                return p | 1n;
+            case 1n:
+                return (p & 0b111100n) | 2n;
+            default:
+                return (p & 0b111100n);
+        }
+    },
+    (p: bigint) => {
+        switch (p & 3n) {
+            case 0n:
+                return p | 2n;
+            case 1n:
+                return (p & 0b111100n);
+            default:
+                return (p & 0b111100n) | 1n;
+        }
+    },
+];
+
+const e = (cub: bigint) => console.log(cub.toString(2));
 
 export const rotateFaceBigInt = (cub: bigint, f: Face, clockwise: boolean): bigint => {
-    const [a, b, c, d] = cornerBiRotations[f][clockwise ? 0 : 1]
-    const ca = a[0](cub);
-    const cb = b[0](cub);
-    const cc = c[0](cub);
-    const cd = d[0](cub);
-    ca.orientation = (ca.orientation + a[1]) % 3 as 0 | 1 | 2;
-    cb.orientation = (cb.orientation + b[1]) % 3 as 0 | 1 | 2;
-    cc.orientation = (cc.orientation + c[1]) % 3 as 0 | 1 | 2;
-    cd.orientation = (cd.orientation + d[1]) % 3 as 0 | 1 | 2;
-    a[2](cub, ca);
-    b[2](cub, cb);
-    c[2](cub, cc);
-    d[2](cub, cd);
+    e(cub);
 
-    const [i, j, k, l] = edgeRotations[f][clockwise ? 0 : 1]
-    const ei = i[0](cub);
-    const ej = j[0](cub);
-    const ek = k[0](cub);
-    const el = l[0](cub);
-    ei.orientation = (ei.orientation + i[1]) % 2 as 0 | 1;
-    ej.orientation = (ej.orientation + j[1]) % 2 as 0 | 1;
-    ek.orientation = (ek.orientation + k[1]) % 2 as 0 | 1;
-    el.orientation = (el.orientation + l[1]) % 2 as 0 | 1;
-    i[2](cub, ei);
-    j[2](cub, ej);
-    k[2](cub, ek);
-    l[2](cub, el);
+    const [a, b, c, d] = cornerBiRotations[f][clockwise ? 0 : 1]
+
+    e(a[0](cub));
+    const ca = biCornerOrientationFlips[a[1]](a[0](cub));
+    e(ca);
+    const cb = biCornerOrientationFlips[b[1]](b[0](cub));
+    const cc = biCornerOrientationFlips[c[1]](c[0](cub));
+    const cd = biCornerOrientationFlips[d[1]](d[0](cub));
+
+
+    const afterA = a[2](cub, ca);
+
+    e(afterA);
+    const afterB = b[2](afterA, cb);
+    const afterC = c[2](afterB, cc);
+    const afterD = d[2](afterC, cd);
+
+    const [i, j, k, l] = edgeBiRotations[f][clockwise ? 0 : 1]
+    const ei = i[0](cub) ^ i[1];
+    const ej = j[0](cub) ^ j[1];
+    const ek = k[0](cub) ^ k[1];
+    const el = l[0](cub) ^ l[1];
+    const afterI = i[2](afterD, ei);
+    const afterJ = j[2](afterI, ej);
+    const afterK = k[2](afterJ, ek);
+    return l[2](afterK, el);
 };
