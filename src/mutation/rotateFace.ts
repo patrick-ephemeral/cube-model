@@ -140,30 +140,38 @@ const getCornBiRot = (sr: SR): [CornBiRot, CornBiRot] => [
         cornerBiSets[sefh[0]],
     ] as CornerBiInst) as CornBiRot,
 ];
-const srSets: { [key: string]: SR } = {
+const srSets: { [key: string]: SR }[] = [{
     [Face.R]: [["ufr", 2, "urb"], ["drf", 1, "ufr"], ["dbr", 2, "drf"], ["urb", 1, "dbr"]],
     [Face.F]: [["ulf", 2, "ufr"], ["ufr", 1, "drf"], ["drf", 2, "dfl"], ["dfl", 1, "ulf"]],
     [Face.U]: [["ubl", 0, "urb"], ["urb", 0, "ufr"], ["ufr", 0, "ulf"], ["ulf", 0, "ubl"]],
     [Face.L]: [["ubl", 2, "ulf"], ["ulf", 1, "dfl"], ["dfl", 2, "dlb"], ["dlb", 1, "ubl"]],
     [Face.B]: [["urb", 2, "ubl"], ["ubl", 1, "dlb"], ["dlb", 2, "dbr"], ["dbr", 1, "urb"]],
     [Face.D]: [["dfl", 0, "drf"], ["drf", 0, "dbr"], ["dbr", 0, "dlb"], ["dlb", 0, "dfl"]],
-};
-const cornerRotations: { [key: string]: [CornRot, CornRot] } = {
-    [Face.R]: getCornRot(srSets[Face.R]),
-    [Face.F]: getCornRot(srSets[Face.F]),
-    [Face.U]: getCornRot(srSets[Face.U]),
-    [Face.L]: getCornRot(srSets[Face.L]),
-    [Face.B]: getCornRot(srSets[Face.B]),
-    [Face.D]: getCornRot(srSets[Face.D]),
-};
-const cornerBiRotations: { [key: string]: [CornBiRot, CornBiRot] } = {
-    [Face.R]: getCornBiRot(srSets[Face.R]),
-    [Face.F]: getCornBiRot(srSets[Face.F]),
-    [Face.U]: getCornBiRot(srSets[Face.U]),
-    [Face.L]: getCornBiRot(srSets[Face.L]),
-    [Face.B]: getCornBiRot(srSets[Face.B]),
-    [Face.D]: getCornBiRot(srSets[Face.D]),
-}
+}, {
+    [Face.R]: [["ufr", 0, "dbr"], ["dbr", 0, "ufr"], ["urb", 0, "drf"], ["drf", 0, "urb"]],
+    [Face.F]: [["ulf", 0, "drf"], ["drf", 0, "ulf"], ["ufr", 0, "dfl"], ["dfl", 0, "ufr"]],
+    [Face.U]: [["ubl", 0, "ufr"], ["ufr", 0, "ubl"], ["urb", 0, "ulf"], ["ulf", 0, "urb"]],
+    [Face.L]: [["ubl", 0, "dfl"], ["dfl", 0, "ubl"], ["ulf", 0, "dlb"], ["dlb", 0, "ulf"]],
+    [Face.B]: [["urb", 0, "dlb"], ["dlb", 0, "urb"], ["ubl", 0, "dbr"], ["dbr", 0, "ubl"]],
+    [Face.D]: [["dfl", 0, "dbr"], ["dbr", 0, "dfl"], ["drf", 0, "dlb"], ["dlb", 0, "drf"]],
+}];
+
+const cornerRotations: { [key: string]: [CornRot, CornRot] }[] = [0, 1].map(i => ({
+    [Face.R]: getCornRot(srSets[i][Face.R]),
+    [Face.F]: getCornRot(srSets[i][Face.F]),
+    [Face.U]: getCornRot(srSets[i][Face.U]),
+    [Face.L]: getCornRot(srSets[i][Face.L]),
+    [Face.B]: getCornRot(srSets[i][Face.B]),
+    [Face.D]: getCornRot(srSets[i][Face.D]),
+}));
+const cornerBiRotations: { [key: string]: [CornBiRot, CornBiRot] }[] = [0, 1].map(i => ({
+    [Face.R]: getCornBiRot(srSets[i][Face.R]),
+    [Face.F]: getCornBiRot(srSets[i][Face.F]),
+    [Face.U]: getCornBiRot(srSets[i][Face.U]),
+    [Face.L]: getCornBiRot(srSets[i][Face.L]),
+    [Face.B]: getCornBiRot(srSets[i][Face.B]),
+    [Face.D]: getCornBiRot(srSets[i][Face.D]),
+}));
 
 type EdgeInst = [EdgeGetter, 0 | 1, EdgeSetter];
 type EdgeBiInst = [BiGet, 0n | 1n, BiSet];
@@ -195,33 +203,40 @@ const getEdgeBiRot = (ae: AE): [EdgeBiRot, EdgeBiRot] => [
         edgeBiSets[heif[0]]
     ] as EdgeBiInst) as EdgeBiRot
 ];
-const aeSets: { [key: string]: AE } = {
+const aeSets: { [key: string]: AE }[] = [{
     [Face.R]: [["rf", 0, "ru"], ["ru", 1, "br"], ["br", 0, "dr"], ["dr", 1, "rf"]],
     [Face.F]: [["lf", 0, "uf"], ["uf", 0, "rf"], ["rf", 0, "df"], ["df", 0, "lf"]],
     [Face.U]: [["lu", 1, "ub"], ["ub", 1, "ru"], ["ru", 1, "uf"], ["uf", 1, "lu"]],
     [Face.L]: [["bl", 1, "lu"], ["lu", 0, "lf"], ["lf", 1, "dl"], ["dl", 0, "bl"]],
     [Face.B]: [["br", 1, "ub"], ["ub", 1, "bl"], ["bl", 1, "db"], ["db", 1, "br"]],
     [Face.D]: [["dl", 0, "df"], ["df", 0, "dr"], ["dr", 0, "db"], ["db", 0, "dl"]],
-}
-const edgeRotations: { [key: string]: [EdgeRot, EdgeRot] } = {
-    [Face.R]: getEdgeRot(aeSets[Face.R]),
-    [Face.F]: getEdgeRot(aeSets[Face.F]),
-    [Face.U]: getEdgeRot(aeSets[Face.U]),
-    [Face.L]: getEdgeRot(aeSets[Face.L]),
-    [Face.B]: getEdgeRot(aeSets[Face.B]),
-    [Face.D]: getEdgeRot(aeSets[Face.D]),
-};
-const edgeBiRotations: { [key: string]: [EdgeBiRot, EdgeBiRot] } = {
-    [Face.R]: getEdgeBiRot(aeSets[Face.R]),
-    [Face.F]: getEdgeBiRot(aeSets[Face.F]),
-    [Face.U]: getEdgeBiRot(aeSets[Face.U]),
-    [Face.L]: getEdgeBiRot(aeSets[Face.L]),
-    [Face.B]: getEdgeBiRot(aeSets[Face.B]),
-    [Face.D]: getEdgeBiRot(aeSets[Face.D]),
-};
+}, {
+    [Face.R]: [["rf", 1, "br"], ["br", 1, "rf"], ["ru", 1, "dr"], ["dr", 1, "ru"]],
+    [Face.F]: [["lf", 0, "rf"], ["rf", 0, "lf"], ["uf", 0, "df"], ["df", 0, "uf"]],
+    [Face.U]: [["lu", 0, "ru"], ["ru", 0, "lu"], ["ub", 0, "uf"], ["uf", 0, "ub"]],
+    [Face.L]: [["bl", 1, "lf"], ["lf", 1, "bl"], ["lu", 1, "dl"], ["dl", 1, "lu"]],
+    [Face.B]: [["br", 0, "bl"], ["bl", 0, "br"], ["ub", 0, "db"], ["db", 0, "ub"]],
+    [Face.D]: [["dl", 0, "dr"], ["dr", 0, "dl"], ["df", 0, "db"], ["db", 0, "df"]],
+}]
+const edgeRotations: { [key: string]: [EdgeRot, EdgeRot] }[] = [0, 1].map(i => ({
+    [Face.R]: getEdgeRot(aeSets[i][Face.R]),
+    [Face.F]: getEdgeRot(aeSets[i][Face.F]),
+    [Face.U]: getEdgeRot(aeSets[i][Face.U]),
+    [Face.L]: getEdgeRot(aeSets[i][Face.L]),
+    [Face.B]: getEdgeRot(aeSets[i][Face.B]),
+    [Face.D]: getEdgeRot(aeSets[i][Face.D]),
+}));
+const edgeBiRotations: { [key: string]: [EdgeBiRot, EdgeBiRot] }[] = [0, 1].map(i => ({
+    [Face.R]: getEdgeBiRot(aeSets[i][Face.R]),
+    [Face.F]: getEdgeBiRot(aeSets[i][Face.F]),
+    [Face.U]: getEdgeBiRot(aeSets[i][Face.U]),
+    [Face.L]: getEdgeBiRot(aeSets[i][Face.L]),
+    [Face.B]: getEdgeBiRot(aeSets[i][Face.B]),
+    [Face.D]: getEdgeBiRot(aeSets[i][Face.D]),
+}));
 
-export const rotateFace = (cub: Cube, f: Face, clockwise: boolean): void => {
-    const [a, b, c, d] = cornerRotations[f][clockwise ? 0 : 1];
+export const rotateFace = (cub: Cube, f: Face, clockwise: boolean, halfTurn: boolean): void => {
+    const [a, b, c, d] = cornerRotations[halfTurn ? 0 : 1][f][clockwise ? 0 : 1];
     const ca = a[0](cub);
     const cb = b[0](cub);
     const cc = c[0](cub);
@@ -235,7 +250,7 @@ export const rotateFace = (cub: Cube, f: Face, clockwise: boolean): void => {
     c[2](cub, cc);
     d[2](cub, cd);
 
-    const [i, j, k, l] = edgeRotations[f][clockwise ? 0 : 1];
+    const [i, j, k, l] = edgeRotations[halfTurn ? 0 : 1][f][clockwise ? 0 : 1];
     const ei = i[0](cub);
     const ej = j[0](cub);
     const ek = k[0](cub);
@@ -274,10 +289,8 @@ const biCornerOrientationFlips = [
     },
 ];
 
-const e = (cub: bigint) => console.log(cub.toString(2));
-
-export const rotateFaceBigInt = (cub: bigint, f: Face, clockwise: boolean): bigint => {
-    const [a, b, c, d] = cornerBiRotations[f][clockwise ? 0 : 1];
+export const rotateFaceBigInt = (cub: bigint, f: Face, clockwise: boolean, halfTurn: boolean): bigint => {
+    const [a, b, c, d] = cornerBiRotations[halfTurn ? 0 : 1][f][clockwise ? 0 : 1];
     const ca = biCornerOrientationFlips[a[1]](a[0](cub));
     const cb = biCornerOrientationFlips[b[1]](b[0](cub));
     const cc = biCornerOrientationFlips[c[1]](c[0](cub));
@@ -287,7 +300,7 @@ export const rotateFaceBigInt = (cub: bigint, f: Face, clockwise: boolean): bigi
     const afterC = c[2](afterB, cc);
     const afterD = d[2](afterC, cd);
 
-    const [i, j, k, l] = edgeBiRotations[f][clockwise ? 0 : 1];
+    const [i, j, k, l] = edgeBiRotations[halfTurn ? 0 : 1][f][clockwise ? 0 : 1];
     const ei = i[0](cub) ^ i[1];
     const ej = j[0](cub) ^ j[1];
     const ek = k[0](cub) ^ k[1];

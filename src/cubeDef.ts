@@ -99,4 +99,5 @@ export interface IUselessCube {
 export interface IMove {
     face: Face,
     clockwise: boolean,
+    halfTurn: boolean,
 };
