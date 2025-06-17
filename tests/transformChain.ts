@@ -1,5 +1,4 @@
 import {
-    createBlankCubieCube,
     createBlankUselessCube,
     cubieCubeToStickerCube,
     cubieCubeToUselessCube,

@@ -9,6 +9,7 @@ import {
     getBigIntForCube,
     fillUselessCubeFromBigInt,
     uselessCubeToCubieCube,
+    bruteForceSolve,
 } from "./dist/index.mjs";
 
 const stickers = cubieCubeToStickerCube(SOLVED_CUBIE_CUBE);
@@ -47,8 +48,8 @@ const prompt = rl.createInterface({
         if (printInstructions) {
             printInstructions = false;
             console.log("Valid Options:");
-            console.log("   Turns: R R' F F' U U' L L' B B' D D'");
-            // console.log("   Solve: S");
+            console.log("   Turns: R R2 R' F F2 F' U U2 U' L L2 L' B B2 B' D D2 D'");
+            console.log("   Solve: S");
             console.log("   Quit: X");
         }
         const input = (await prompt.question("> ")).toUpperCase();
@@ -57,45 +58,63 @@ const prompt = rl.createInterface({
                 loop = false;
                 break;
             case "R":
-                biTurn = rotateFaceBigInt(biTurn, Face.R, true);
+                biTurn = rotateFaceBigInt(biTurn, Face.R, true, true);
+                break;
+            case "R2":
+                biTurn = rotateFaceBigInt(biTurn, Face.R, true, false);
                 break;
             case "R'":
-                biTurn = rotateFaceBigInt(biTurn, Face.R, false);
+                biTurn = rotateFaceBigInt(biTurn, Face.R, false, true);
                 break;
             case "F":
-                biTurn = rotateFaceBigInt(biTurn, Face.F, true);
+                biTurn = rotateFaceBigInt(biTurn, Face.F, true, true);
+                break;
+            case "F2":
+                biTurn = rotateFaceBigInt(biTurn, Face.F, true, false);
                 break;
             case "F'":
-                biTurn = rotateFaceBigInt(biTurn, Face.F, false);
+                biTurn = rotateFaceBigInt(biTurn, Face.F, false, true);
                 break;
             case "U":
-                biTurn = rotateFaceBigInt(biTurn, Face.U, true);
+                biTurn = rotateFaceBigInt(biTurn, Face.U, true, true);
+                break;
+            case "U2":
+                biTurn = rotateFaceBigInt(biTurn, Face.U, true, false);
                 break;
             case "U'":
-                biTurn = rotateFaceBigInt(biTurn, Face.U, false);
+                biTurn = rotateFaceBigInt(biTurn, Face.U, false, true);
                 break;
             case "L":
-                biTurn = rotateFaceBigInt(biTurn, Face.L, true);
+                biTurn = rotateFaceBigInt(biTurn, Face.L, true, true);
+                break;
+            case "L2":
+                biTurn = rotateFaceBigInt(biTurn, Face.L, true, false);
                 break;
             case "L'":
-                biTurn = rotateFaceBigInt(biTurn, Face.L, false);
+                biTurn = rotateFaceBigInt(biTurn, Face.L, false, true);
                 break;
             case "B":
-                biTurn = rotateFaceBigInt(biTurn, Face.B, true);
+                biTurn = rotateFaceBigInt(biTurn, Face.B, true, true);
+                break;
+            case "B2":
+                biTurn = rotateFaceBigInt(biTurn, Face.B, true, false);
                 break;
             case "B'":
-                biTurn = rotateFaceBigInt(biTurn, Face.B, false);
+                biTurn = rotateFaceBigInt(biTurn, Face.B, false, true);
                 break;
             case "D":
-                biTurn = rotateFaceBigInt(biTurn, Face.D, true);
+                biTurn = rotateFaceBigInt(biTurn, Face.D, true, true);
+                break;
+            case "D2":
+                biTurn = rotateFaceBigInt(biTurn, Face.D, true, false);
                 break;
             case "D'":
-                biTurn = rotateFaceBigInt(biTurn, Face.D, false);
+                biTurn = rotateFaceBigInt(biTurn, Face.D, false, true);
                 break;
-                // case "S":
-                //     console.log("Solving...");
-                //     var solution = solveCubieCube(toTurn);
-                //     console.log(solution.map(t => `${t.face}${t.clockwise ? "" : "'"}`).join("  "));
+            case "S":
+                console.log("Solving...");
+                var solution = bruteForceSolve(biTurn);
+                console.log(solution.map(t => `${t.face}${t.clockwise ? "" : "'"}`).join("  "));
                 break;
             default:
                 printInstructions = true;

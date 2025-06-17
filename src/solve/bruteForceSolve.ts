@@ -1,9 +1,8 @@
 import { SOLVED_CUBIE_CUBE } from "../constants";
-import { Face, ICubieCube, IMove, IStickerCube, IUselessCube } from "../cubeDef";
-import { createBlankUselessCube } from "../initialization";
-import { rotateFace } from "../mutation";
-import { fillUselessCubeFromArray, writeUselessCubeToArray } from "../serialization";
-import { cubieCubeToUselessCube, stickerCubeToCubieCube } from "../transforms";
+import { Face, IMove } from "../cubeDef";
+import { rotateFaceBigInt } from "../mutation";
+import { getBigIntForCube, writeUselessCubeToArray } from "../serialization";
+import { cubieCubeToUselessCube } from "../transforms";
 
 type Start = "START";
 type End = "END";
@@ -16,66 +15,68 @@ interface IMoveChain extends IMove {
 type Link = IMoveChain | Start | End;
 
 const MOVES: IMove[] = [
-    { face: Face.R, clockwise: true },
-    { face: Face.R, clockwise: false },
-    { face: Face.B, clockwise: true },
-    { face: Face.B, clockwise: false },
-    { face: Face.L, clockwise: true },
-    { face: Face.L, clockwise: false },
-    { face: Face.F, clockwise: true },
-    { face: Face.F, clockwise: false },
-    { face: Face.U, clockwise: true },
-    { face: Face.U, clockwise: false },
-    { face: Face.D, clockwise: true },
-    { face: Face.D, clockwise: false },
+    { face: Face.R, clockwise: true, halfTurn: true },
+    { face: Face.R, clockwise: false, halfTurn: true },
+    { face: Face.B, clockwise: true, halfTurn: true },
+    { face: Face.B, clockwise: false, halfTurn: true },
+    { face: Face.L, clockwise: true, halfTurn: true },
+    { face: Face.L, clockwise: false, halfTurn: true },
+    { face: Face.F, clockwise: true, halfTurn: true },
+    { face: Face.F, clockwise: false, halfTurn: true },
+    { face: Face.U, clockwise: true, halfTurn: true },
+    { face: Face.U, clockwise: false, halfTurn: true },
+    { face: Face.D, clockwise: true, halfTurn: true },
+    { face: Face.D, clockwise: false, halfTurn: true },
 ];
 
-const solve = (uc: IUselessCube): IMove[] => {
+export const bruteForceSolve = (bic: bigint): IMove[] => {
 
     // make a queue to hold positions to evalutate
-    const cubeSpace = new Array<number | Link>();
+    const cubeSpace = new Array<bigint>();
 
     // make a map of position hash's to links
-    const linkMap = new Map<string, Link>();
+    const linkMap = new Map<bigint, Link>();
 
     // add start cube to queue:
-    const startHash = writeUselessCubeToArray(uc, cubeSpace as number[], 0);
-    cubeSpace[4] = "START";
-    linkMap.set(startHash, "START");
+    cubeSpace.push(bic);
+    linkMap.set(bic, "START");
 
     // add final state to queue:
-    const endHash = writeUselessCubeToArray(cubieCubeToUselessCube(SOLVED_CUBIE_CUBE), cubeSpace as number[], 5);
-    cubeSpace[9] = "END";
-    linkMap.set(endHash, "END");
+    const end = getBigIntForCube(cubieCubeToUselessCube(SOLVED_CUBIE_CUBE));
+    cubeSpace.push(end)
+    linkMap.set(end, "END");
 
-    // start the queue reading the start and end, write after them
-    let readIndex = 0;
-    let writeIndex = 10;
+    // keep track for progress[]
+    let head = 0;
     let cubesAnalyzed = 0;
     let fromStartCubes = 1;
     let fromEndCubes = 1;
-    const cube = createBlankUselessCube();
 
     // while there is space to keep searching
     while (true) {
 
         // find place in chain
-        const lastLink = cubeSpace[readIndex + 4] as Link;
+        const place = cubeSpace[head];
+        head += 1;
+
+        if (head > 1000) {
+            cubeSpace.slice(head);
+            head = 0;
+        }
+
+        const lastLink = linkMap.get(place);
         const fromStart = (lastLink as IMoveChain).fromStart ?? lastLink === "START";
 
         // loop through the moves
         for (const move of MOVES) {
             // start at read and turn the cube
-            fillUselessCubeFromArray(cube, cubeSpace as number[], readIndex);
-            rotateFace(cube, move.face, move.clockwise);
 
-            // see if this is a new position, or if it connects the chains
-            var hash = writeUselessCubeToArray(cube, cubeSpace as number[], writeIndex);
+            const rotated = rotateFaceBigInt(place, move.face, move.clockwise, move.halfTurn);
 
-            if (linkMap.has(hash)) {
+            if (linkMap.has(rotated)) {
 
                 // see if it connects!
-                const link = linkMap.get(hash);
+                const link = linkMap.get(rotated);
                 const linkFromStart = (link as IMoveChain).fromStart ?? link === "START";
                 if (linkFromStart != fromStart) {
                     // WE DID IT! WE CONNECTED THE CHAINS!
@@ -89,6 +90,7 @@ const solve = (uc: IUselessCube): IMove[] => {
                         flipper.push({
                             face: (startChain as IMoveChain).face,
                             clockwise: (startChain as IMoveChain).clockwise,
+                            halfTurn: (startChain as IMoveChain).halfTurn,
                         });
                         startChain = (startChain as IMoveChain).last;
                     }
@@ -100,6 +102,7 @@ const solve = (uc: IUselessCube): IMove[] => {
                     finalMoves.push({
                         face: move.face,
                         clockwise: linkFromStart ? !move.clockwise : move.clockwise,
+                        halfTurn: move.halfTurn,
                     });
 
                     // add the end chain things, but flip clockwise
@@ -108,6 +111,7 @@ const solve = (uc: IUselessCube): IMove[] => {
                         finalMoves.push({
                             face: (endChain as IMoveChain).face,
                             clockwise: !(endChain as IMoveChain).clockwise,
+                            halfTurn: (endChain as IMoveChain).halfTurn,
                         });
                         endChain = (endChain as IMoveChain).last;
                     }
@@ -121,12 +125,9 @@ const solve = (uc: IUselessCube): IMove[] => {
 
                 // this is a new position, add it to the map
                 if (fromStart) { fromStartCubes += 1; } else { fromEndCubes += 1; }
-                const newLink = { ...move, fromStart, last: lastLink };
-                cubeSpace[writeIndex + 4] = newLink;
-                linkMap.set(hash, newLink);
-
-                // increment the writeIndex
-                writeIndex += 5;
+                const newLink = { ...move, fromStart, last: lastLink as Link };
+                cubeSpace.push(rotated);
+                linkMap.set(rotated, newLink);
             }
         }
 
@@ -137,18 +138,5 @@ const solve = (uc: IUselessCube): IMove[] => {
             console.log(`Unique cubes from start: ${fromStartCubes}`);
             console.log(`Unique cubes from end: ${fromEndCubes}`);
         }
-
-        readIndex += 5;
     }
-};
-
-
-export const solveStickerCube = (sc: IStickerCube): IMove[] => {
-    const cubieCube = stickerCubeToCubieCube(sc);
-    return solveCubieCube(cubieCube);
-};
-
-export const solveCubieCube = (cc: ICubieCube): IMove[] => {
-    const uselessCube = cubieCubeToUselessCube(cc);
-    return solve(uselessCube);
 };
