@@ -32,7 +32,7 @@ const MOVES: IMove[] = [
 export const bruteForceSolve = (bic: bigint): IMove[] => {
 
     // make a queue to hold positions to evalutate
-    const cubeSpace = new Array<bigint>();
+    let cubeSpace = new Array<bigint>();
 
     // make a map of position hash's to links
     const linkMap = new Map<bigint, Link>();
@@ -56,11 +56,15 @@ export const bruteForceSolve = (bic: bigint): IMove[] => {
     while (true) {
 
         // find place in chain
+        if (head >= cubeSpace.length) {
+            console.log("Search exhausted, no solution found.");
+            return [];
+        }
         const place = cubeSpace[head];
         head += 1;
 
         if (head > 1000) {
-            cubeSpace.slice(head);
+            cubeSpace = cubeSpace.slice(head);
             head = 0;
         }
 
