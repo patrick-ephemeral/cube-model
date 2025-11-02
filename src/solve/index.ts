@@ -1,1 +1,1 @@
-export * from "./bruteForceSolve";
+export * from "./bruteForce";
