@@ -1,4 +1,4 @@
-import { ICubieCube, IMove } from "../../cubeDef";
+import { IMove } from "../../cubeDef";
 
 export type CostHeuristic<Cube> = (cube: Cube) => number;
 export type IsGoalState<Cube> = (cube: Cube) => boolean;

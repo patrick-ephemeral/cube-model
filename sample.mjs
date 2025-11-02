@@ -116,6 +116,10 @@ const prompt = rl.createInterface({
                 var solution = bruteForceSolve(biTurn);
                 console.log(solution.map(t => `${t.face}${t.clockwise ? "" : "'"}`).join("  "));
                 break;
+            case "Y":
+                console.log("");
+                console.log(JSON.stringify(useless, null, 2));
+                break;
             default:
                 printInstructions = true;
                 break;
